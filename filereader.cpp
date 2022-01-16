@@ -24,7 +24,34 @@ std::vector<bfOp> read_bf_file(std::string path){
     }
     std::vector<bfOp> operations;
     for(int i = 0; i < lines.size(); i++){
-        std::cout << lines[i] << std::endl;
+        for(int c = 0; lines[i].c_str()[0] == 0; i++){
+            switch(lines[i][c]){
+                case '+':
+                    operations.push_back(INCREMENT);
+                break;
+                case '-':
+                    operations.push_back(DECREMENT);
+                break;
+                case '>':
+                    operations.push_back(RIGHT);
+                break;
+                case '<':
+                    operations.push_back(RIGHT);
+                break;
+                case '.':
+                    operations.push_back(OUTPUT);
+                break;
+                case ',':
+                    operations.push_back(INPUT);
+                break;
+                case '[':
+                    operations.push_back(BEGIN_LOOP);
+                break;
+                case ']':
+                    operations.push_back(END_LOOP);
+                break;
+            }
+        }
     }
     return operations;
 }
