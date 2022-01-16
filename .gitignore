@@ -1,0 +1,9 @@
+*
+!*.cpp
+!*.h
+!*.md
+!tests
+!tests/*.cpp
+!tests/*.h
+!tests/*.bf
+!.gitignore
