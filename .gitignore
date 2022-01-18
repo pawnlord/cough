@@ -6,4 +6,5 @@
 !tests/*.cpp
 !tests/*.h
 !tests/*.bf
+!tests/*.bat
 !.gitignore

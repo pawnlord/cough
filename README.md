@@ -1,6 +1,8 @@
 # cerebellum
 A brainf*** compiler built in C++ for windows to learn the basics of compiling code
 
+## dependencies
+
 ## usage
 ```
 cerebellum [-o/--option=arg] <program.bf>
