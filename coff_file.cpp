@@ -52,9 +52,11 @@ void CoffFile::add_section(char name[8], int32_t flags, RelocationTable rt, std:
     section_header_t sh = {name, 0, 0, data.size(), head.f_symptr, head.f_symptr+data.size(), 0, 0, 0, flags, data};
     head.f_symptr+=data.size();
     head.f_symptr+=rt.get_size();
+    
     // After adding a new section, every section is offset by 40
     for(int i = 0; i < sections.size(); i++){
         sections[i].s_scnptr+=40;
+        sections[i].s_relptr+=40;
     }
     
     sections.push_back(sh);
@@ -70,7 +72,7 @@ void CoffFile::add_symbol(std::string name, unsigned long value, short scnum, un
     char full_aux[18] = {0};
     if(aux != ""){
         strcpy(full_aux, aux.c_str());
-    }
+    } 
     if(name.length() <= 8){
         char final_name[8];
         for(int i = 0; i < 8; i++){
@@ -94,7 +96,7 @@ void CoffFile::add_symbol(std::string name, unsigned long value, short scnum, un
         symbol s = {final_name, value, scnum, type, sclass, numaux, full_aux};
         symbols.push_back(s);
     }
-    head.f_nsyms += 1;
+    head.f_nsyms += 1 + (aux == ""?0:1);
 }
 
 void CoffFile::compile(){
@@ -111,7 +113,10 @@ void CoffFile::compile(){
 
     // compile section headers
     for(int i = 0; i < sections.size(); i++){
-        coff_pbn(sections[i].s_name.name_num, 8);
+        std::cout << sections[i].s_name.name << std::endl;
+        for(int j = 0; j < 8; j++){
+            coff_pbn(sections[i].s_name.name[j], 1);
+        }
         coff_pbn(sections[i].s_paddr, 4);
         coff_pbn(sections[i].s_vaddr, 4);
         coff_pbn(sections[i].s_size, 4);
@@ -153,7 +158,12 @@ void CoffFile::compile(){
 
 
     std::cout << "Compiled. size of data: " << data.size();
+}
+
+std::string CoffFile::get_compiled(){
+    std::string compiled = "";
     for(int i = 0; i < data.size(); i++){
-        std::cout << std::hex << (int)(unsigned char)data[i]<< " ";
+        compiled += data[i];
     }
+    return compiled;
 }

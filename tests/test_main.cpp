@@ -1,5 +1,6 @@
 #include "filereader.h"
 #include "coff_file.h"
+#include <fstream>
 
 int main(){
     read_bf_file("test_file.bf");
@@ -20,9 +21,8 @@ int main(){
  
     cf.add_section(".text\0\0\0", 0x60500020, text_rt, std::vector<unsigned char>({
         0x6A, 0xF5, 0xE8, 0x00, 0x00, 0x00, 0x00, 0x6A, 0x00, 0x68, 0x00, 0x00, 0x00, 0x00, 0x6A, 0x0F, 0x68, 0x00, 0x00, 0x00, 0x00, 0x50, 0xE8, 0x00, 0x00,
-        0x00, 0x00, 0x6A, 0x00, 0xE8, 0x00, 0x00, 0x00, 0x00, 0x03}));
+        0x00, 0x00, 0x6A, 0x00, 0xE8, 0x00, 0x00, 0x00, 0x00}));
     std::cout << "sections made" << std::endl;
-    
     cf.add_symbol(".file", 0, -2, 0, 0x67, 1, ".\test.asm");
     cf.add_symbol(".data", 0, 1, 0, 0x3, 1, "\017\0");
     cf.add_symbol(".bss", 0, 2, 0, 0x3, 1, "\04\0");
@@ -40,5 +40,11 @@ int main(){
     cf.add_symbol("@feat.00\0", 1, -1, 0, 0x3, 0, "");
     std::cout << "symbols made" << std::endl;
     cf.compile();
+    std::cout << "compiled" << std::endl;
+
+    std::string data = cf.get_compiled();
+    std::ofstream out ("test_build.o", std::ios::binary);
+    out.write(data.c_str(), data.size()+1);
+
     std::cout << "tests complete" << std::endl;
 }
