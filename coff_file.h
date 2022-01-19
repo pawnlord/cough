@@ -33,11 +33,12 @@ struct str_offset{
     unsigned long e_zeroes;
     unsigned long e_offset;
 };
-typedef struct {
-  union {
+typedef union {
     char* e_name;
     struct str_offset e;
-  } e;
+} sym_name;
+typedef struct {
+  sym_name e;
   unsigned long e_value;
   short e_scnum;
   unsigned short e_type;
@@ -80,6 +81,8 @@ class CoffFile {
     std::vector<RelocationTable> rts;
     std::vector<char> data;
     std::vector<char> string_table;
+    std::vector<int> bss_sections;
+    int string_table_sz;
 };
 
 #endif
