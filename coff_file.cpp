@@ -50,14 +50,12 @@ void CoffFile::coff_pbn(int32_t number, char size){
 
 void CoffFile::add_symbol(std::string name, unsigned long value, short scnum, unsigned short type, unsigned char sclass, unsigned char numaux, std::string aux){
     char* full_aux;
-    std::cout << name << std::endl;
     if(aux != ""){
         full_aux =  (char*)malloc(18);
         for(int i = 0; i < 18; i++){
             full_aux[i] = 0;
         }
         strcpy(full_aux, aux.c_str());
-        std::cout << "full_aux" << full_aux <<std::endl;
     } 
     if(name.length() <= 8){
         char* final_name = (char*)malloc(8);
@@ -68,9 +66,7 @@ void CoffFile::add_symbol(std::string name, unsigned long value, short scnum, un
                 final_name[i] = 0;
             }
         }
-        std::cout << final_name<< std::endl;
         symbol s = {final_name, value, scnum, type, sclass, numaux, full_aux};
-        std::cout << "full_aux" << s.aux <<std::endl;
         symbols.push_back(s);
     } // We need the string table otherwise
     else{
@@ -88,7 +84,6 @@ void CoffFile::add_symbol(std::string name, unsigned long value, short scnum, un
     }
     for(int i = 0; i < bss_sections.size(); i++){
         if(scnum == bss_sections[i]){
-            std::cout << "bss symbol: " << name << std::endl;
             sections[bss_sections[i]-1].s_size += 4;
         }
     }
@@ -105,11 +100,9 @@ void CoffFile::compile(){
 	coff_pbn(head.f_nsyms, 4);
 	coff_pbn(head.f_opthdr, 2);	
 	coff_pbn(head.f_flags, 2);
-    std::cout << "header compiled" << std::endl;
 
     // compile section headers
     for(int i = 0; i < sections.size(); i++){
-        std::cout << sections[i].s_name.name << std::endl;
         for(int j = 0; j < 8; j++){
             coff_pbn(sections[i].s_name.name[j], 1);
         }
@@ -123,17 +116,16 @@ void CoffFile::compile(){
         coff_pbn(sections[i].s_nlnno, 2);
         coff_pbn(sections[i].s_flags, 4);
     }
-    std::cout << "section headers compiled" << std::endl;
+    std::cout << "Section headers compiled" << std::endl;
     std::vector<char> rdata;
     for(int i = 0; i < sections.size(); i++){
         data.insert(data.end(), sections[i].data.begin(), sections[i].data.end());
         rdata = rts[i].get_data();
         data.insert(data.end(), rdata.begin(), rdata.end()); // TODO: possible error
     }
-    std::cout << "sections compiled" << std::endl;
+    std::cout << "Sections compiled" << std::endl;
     for(int i = 0; i < symbols.size(); i++){
         if(symbols[i].e.e.e_zeroes != 0){
-            std::cout << symbols[i].e.e_name << std::endl;
             for(int j = 0; j < 8; j++){
                 coff_pbn(symbols[i].e.e_name[j], 1);
             }
@@ -147,15 +139,13 @@ void CoffFile::compile(){
         coff_pbn(symbols[i].e_sclass, 1);
         coff_pbn(symbols[i].e_numaux, 1);
         if(symbols[i].e_numaux == 1){
-            std::cout << std::hex << (int)symbols[i].aux[0] << std::endl;
             for(int j = 0; j < 18; j++){
                 coff_pbn(symbols[i].aux[j], 1);
             }
         }
     }
-    std::cout << "symbols compiled" << std::endl;
+    std::cout << "Symbols compiled" << std::endl;
     
-    std::cout << "size of str table: " << string_table_sz;
     // set string table size.
     for(int i = 0; i < 4; i++){
         string_table[i] = (string_table_sz>>(i*8))&0xFF;
@@ -165,7 +155,7 @@ void CoffFile::compile(){
     std::cout << "string table added" << std::endl;
 
 
-    std::cout << "Compiled. size of data: " << data.size();
+    std::cout << "Compiled. size of data: " << data.size() << std::endl;
 }
 
 std::string CoffFile::get_compiled(){

@@ -1,6 +1,6 @@
 #include "coff_utils.h"
 
-void push_back_number(std::vector<char>& ref, int32_t number, char size);{
+void push_back_number(std::vector<char>& ref, int32_t number, char size){
     int temp = number;
     for(int i = 0; i < size; i++){
         unsigned char byte = temp&0xff;
