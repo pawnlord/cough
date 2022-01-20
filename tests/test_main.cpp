@@ -16,10 +16,7 @@ int main(){
     text_rt.add_relocation(0xA, 0x4, 0x6);
     text_rt.add_relocation(0x11, 0x2, 0x6);
     text_rt.add_relocation(0x17, 0xD, 0x14);
-    text_rt.add_relocation(0x1E, 0x4, 0x6);
-    text_rt.add_relocation(0x25, 0x2, 0x6);
-    text_rt.add_relocation(0x2B, 0xD, 0x14);
-    text_rt.add_relocation(0x32, 0xB, 0x14);
+    text_rt.add_relocation(0x1E, 0xB, 0x14);
     std::cout << "text relocations made" << std::endl;
  
     cf.add_section(".text\0\0\0", 0x60500020, text_rt, std::vector<unsigned char>({
