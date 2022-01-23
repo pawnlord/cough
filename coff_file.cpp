@@ -4,6 +4,12 @@
 #include <stdlib.h>
 
 
+void push_aux_number(std::string& aux, int num, int size){
+    for(int i = 0; i < size; i++){
+        aux += (num>>(i*8))&0xff;
+    }
+}
+
 CoffFile::CoffFile(){
     head.f_magic = 0x014c;
     head.f_nscns = 0;
@@ -16,13 +22,23 @@ CoffFile::CoffFile(){
         string_table.push_back(0); // init string table size
     }
     string_table_sz = 4;
+    add_symbol(".file\0", 0, -2, 0, 0x67, 1, ".\test.asm");
+}
+CoffFile::CoffFile(std::string file_name){
+    head.f_magic = 0x014c;
+    head.f_nscns = 0;
+    head.f_timdat = time(NULL);
+    head.f_symptr = 20;
+    head.f_nsyms = 0;
+    head.f_opthdr = 0;
+    head.f_flags = 0;
+    for(int i = 0; i < 4; i++){
+        string_table.push_back(0); // init string table size
+    }
+    string_table_sz = 4;
+    add_symbol(".file\0", 0, -2, 0, 0x67, 1, file_name);
 }
 
-void push_aux_number(std::string& aux, int num, int size){
-    for(int i = 0; i < size; i++){
-        aux += (num>>(i*8))&0xff;
-    }
-}
 
 void CoffFile::add_section(char name[8], int32_t flags, RelocationTable rt, std::vector<unsigned char> data){
     head.f_symptr+=40;

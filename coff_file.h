@@ -11,6 +11,7 @@
 class CoffFile {
     public:
     CoffFile();
+    CoffFile(std::string file_name);
     void add_section(char name[8], int32_t flags, RelocationTable rt, std::vector<unsigned char> data);
     void add_symbol(std::string name, unsigned long value, short scnum, 
                         unsigned short type, unsigned char sclass, 

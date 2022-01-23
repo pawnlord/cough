@@ -2,8 +2,7 @@
 #include <fstream>
 
 int main(){
-    read_bf_file("test_file.bf");
-    CoffFile cf;
+    CoffFile cf("hey.asm");
 
     RelocationTable null_rt(true);
     cf.add_section(".data\0\0\0", 0xC0300040, null_rt, std::vector<unsigned char>({
@@ -25,10 +24,6 @@ int main(){
         0x6A, 0x00, 0xE8, 0x00, 0x00, 0x00, 0x00 // Exit (7)
     }));
     std::cout << "sections made" << std::endl;
-    cf.add_symbol(".file", 0, -2, 0, 0x67, 1, ".\\test.asm");
-    cf.add_symbol(".data", 0, 1, 0, 0x3, 1, "\017\0");
-    cf.add_symbol(".bss", 0, 2, 0, 0x3, 1, "\04\0");
-    cf.add_symbol(".text", 0, 3, 0, 0x3, 1, "\01\0");
     cf.add_symbol(".absolut", 0, -1, 0, 0x3, 0, "");
     cf.add_symbol("STD_OUTPUT_HANDLE\0", 0xFFFFFFF5, -1, 0, 0x3, 0, "");
     cf.add_symbol("NULL", 0, -1, 0, 0x3, 0, "");
