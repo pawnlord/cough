@@ -1,4 +1,3 @@
-#include "filereader.h"
 #include "coff_file.h"
 #include <fstream>
 

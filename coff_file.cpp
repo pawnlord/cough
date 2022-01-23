@@ -18,6 +18,11 @@ CoffFile::CoffFile(){
     string_table_sz = 4;
 }
 
+void push_aux_number(std::string& aux, int num, int size){
+    for(int i = 0; i < size; i++){
+        aux += (num>>(i*8))&0xff;
+    }
+}
 
 void CoffFile::add_section(char name[8], int32_t flags, RelocationTable rt, std::vector<unsigned char> data){
     head.f_symptr+=40;
@@ -42,6 +47,12 @@ void CoffFile::add_section(char name[8], int32_t flags, RelocationTable rt, std:
     sections.push_back(sh);
     head.f_nscns += 1;
     rts.push_back(rt);
+
+    // create section symbol
+    std::string aux;
+    push_aux_number(aux, sh.s_size, 4);
+    push_aux_number(aux, sh.s_nreloc, 2);
+    add_symbol(std::string(name) + "\0", 0, sections.size(), 0, 3, 1, aux);
 }
 
 void CoffFile::coff_pbn(int32_t number, char size){
@@ -152,7 +163,7 @@ void CoffFile::compile(){
     }
 
     data.insert(data.end(), string_table.begin(), string_table.end());
-    std::cout << "string table added" << std::endl;
+    std::cout << "String table added" << std::endl;
 
 
     std::cout << "Compiled. size of data: " << data.size() << std::endl;
